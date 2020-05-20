@@ -67,10 +67,10 @@ let game = {
     update() {
         this.platform.move();
         this.ball.move();
+        this.ball.collideWorldBounds();
         this.collideBlocks();
         this.collidePlatform();
     },
-
     collideBlocks() {
         for (let block of this.blocks) {
             if (block.active && this.ball.collide(block)) {
@@ -78,8 +78,7 @@ let game = {
             }
 
         }
-    }
-    ,
+    },
     collidePlatform() {
         if (this.ball.collide(this.platform)) {
             this.ball.bumpPlatform(this.platform);
@@ -156,6 +155,7 @@ game.ball = {
         block.active = false;
     },
     bumpPlatform(platform) {
+
         if (platform.dx) {
             this.x += platform.dx;
         }
@@ -165,7 +165,35 @@ game.ball = {
             let touchX = this.x + this.width / 2;
             this.dx = this.velocity * platform.getTouchOffset(touchX);
         }
-    }
+    },
+    collideWorldBounds() {
+        let x = this.x + this.dx;
+        let y = this.y + this.dy;
+
+        let ballLeft = x;
+        let ballRight = ballLeft + this.width;
+        let ballTop = y;
+        let ballBottom = ballTop + this.height;
+
+        let worldLeft = 0;
+        let worldRight = game.width;
+        let worldTop = 0;
+        let worldBottom = game.height;
+
+        if (ballLeft < worldLeft) {
+            this.x = 0;
+            this.dx = this.velocity;
+        } else if (ballRight > worldRight) {
+            this.x = worldRight - this.width;
+            this.dx = -this.velocity;
+        } else if (ballTop < worldTop) {
+            this.y = 0;
+            this.dy = this.velocity;
+
+        } else if (ballBottom > worldBottom) {
+          console.log('loser')
+        }
+    },
 };
 
 game.platform = {
