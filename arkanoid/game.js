@@ -9,6 +9,7 @@ let game = {
     platform: null,
     ball: null,
     blocks: [],
+    running: true,
     rows: 6,
     cols: 10,
     width: 1280,
@@ -86,11 +87,14 @@ let game = {
         }
     },
     run() {
-        window.requestAnimationFrame(() => {
-            this.update();
-            this.render();
-            this.run();
-        });
+        if (this.running) {
+            window.requestAnimationFrame(() => {
+                this.update();
+                this.render();
+                this.run();
+            });
+        }
+
     },
     render() {
         this.ctx.clearRect(0, 0, this.width, this.height);
@@ -116,6 +120,9 @@ let game = {
     },
     random(min, max) {
         return Math.floor(Math.random() * (max - min + 1) + min);
+    },
+    reload() {
+        window.location.reload(true);
     }
 };
 
@@ -191,7 +198,9 @@ game.ball = {
             this.y = 0;
             this.dy = this.velocity;
         } else if (ballBottom > worldBottom) {
-            console.log('loser')
+            game.running = false;
+            alert('Лузер!');
+            game.reload();
         }
     },
 };
