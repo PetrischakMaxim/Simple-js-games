@@ -10,8 +10,9 @@ let game = {
     ball: null,
     blocks: [],
     running: true,
-    rows: 6,
-    cols: 10,
+    rows: 1,
+    cols: 3,
+    score: null,
     width: 1280,
     height: 720,
     sprites: {
@@ -77,6 +78,7 @@ let game = {
         for (let block of this.blocks) {
             if (block.active && this.ball.collide(block)) {
                 this.ball.bumpBlock(block);
+                this.addScore();
             }
 
         }
@@ -121,8 +123,16 @@ let game = {
     random(min, max) {
         return Math.floor(Math.random() * (max - min + 1) + min);
     },
-    reload() {
+    end(result) {
+        this.running = false;
+        alert(result);
         window.location.reload(true);
+    },
+    addScore() {
+        ++this.score;
+        if (this.score >= this.blocks.length) {
+            this.end('Вы победили');
+        }
     }
 };
 
@@ -198,9 +208,7 @@ game.ball = {
             this.y = 0;
             this.dy = this.velocity;
         } else if (ballBottom > worldBottom) {
-            game.running = false;
-            alert('Лузер!');
-            game.reload();
+            game.end('Вы проиграли');
         }
     },
 };
