@@ -10,9 +10,9 @@ let game = {
     ball: null,
     blocks: [],
     running: true,
-    rows: 1,
-    cols: 1,
-    score: null,
+    rows: 3,
+    cols: 10,
+    score: 0,
     width: 1280,
     height: 720,
     sprites: {
@@ -30,6 +30,7 @@ let game = {
     },
     init() {
         this.ctx = document.getElementById("mycanvas").getContext("2d");
+        this.setTextFont();
         this.setEvents();
     },
     setEvents() {
@@ -125,13 +126,18 @@ let game = {
         this.ctx.drawImage(this.sprites.ball, 0, 0, this.ball.width, this.ball.height, this.ball.x, this.ball.y, this.ball.width, this.ball.height);
         this.ctx.drawImage(this.sprites.platform, this.platform.x, this.platform.y);
         this.renderBlocks();
+
+        this.ctx.fillText(`Score: ${this.score}`, 50, 50);
+    },
+    setTextFont() {
+        this.ctx.fillStyle = '#fff';
+        this.ctx.font = '26px/1.2 Arial,sans-serif';
     },
     renderBlocks() {
         for (let block of this.blocks) {
             if (block.active) {
                 this.ctx.drawImage(this.sprites.block, block.x, block.y);
             }
-
         }
     },
     start: function () {
@@ -139,7 +145,7 @@ let game = {
 
         this.preload(() => {
             this.create();
-            this.sounds.soundtrack.play();
+            //this.sounds.soundtrack.play();
             this.run();
         });
     },
