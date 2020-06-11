@@ -14,7 +14,7 @@ let game = {
     cols: 10,
     score: 0,
     width: 1280,
-    height: 720,
+    height: 600,
     sprites: {
         background: null,
         ball: null,
@@ -140,7 +140,7 @@ let game = {
             }
         }
     },
-    start: function () {
+    start() {
         this.init();
 
         this.preload(() => {
