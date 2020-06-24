@@ -4,7 +4,7 @@ const KEYS = {
     SPACE: 32
 };
 
-let game = {
+const Game = {
     ctx: null,
     platform: null,
     ball: null,
@@ -24,7 +24,7 @@ let game = {
     sounds: {
         soundtrack: null,
         bump: null,
-        gameover: null,
+        Gameover: null,
         fire: null,
         winner: null,
     },
@@ -70,7 +70,9 @@ let game = {
     preloadAudio(callback) {
         for (let key in this.sounds) {
             this.sounds[key] = new Audio(`sounds/${key}.mp3`);
-            this.sounds[key].addEventListener("canplaythrough", callback, { once: true });
+            this.sounds[key].addEventListener("canplaythrough", callback, {
+                once: true
+            });
         }
     },
     create() {
@@ -107,7 +109,7 @@ let game = {
     collidePlatform() {
         if (this.ball.collide(this.platform)) {
             this.ball.bumpPlatform(this.platform);
-            game.sounds.bump.play();
+            Game.sounds.bump.play();
         }
     },
     run() {
@@ -145,7 +147,6 @@ let game = {
 
         this.preload(() => {
             this.create();
-            //this.sounds.soundtrack.play();
             this.run();
         });
     },
@@ -160,24 +161,24 @@ let game = {
     addScore() {
         ++this.score;
         if (this.score >= this.blocks.length) {
-            game.sounds.soundtrack.pause();
+            this.sounds.soundtrack.pause();
             this.sounds.winner.play();
             this.end('Вы победили');
         }
     }
 };
 
-game.ball = {
+Game.ball = {
     dx: 0,
     dy: 0,
     velocity: 10,
-    x: game.width / 2 - 20,
-    y: game.height - 85,
+    x: Game.width / 2 - 20,
+    y: Game.height - 85,
     width: 40,
     height: 40,
     start() {
         this.dy = -this.velocity;
-        this.dx = game.random(-this.velocity, this.velocity);
+        this.dx = Game.random(-this.velocity, this.velocity);
     },
     move() {
         if (this.dy) {
@@ -215,7 +216,7 @@ game.ball = {
             this.dx = this.velocity * platform.getTouchOffset(touchX);
 
         }
-        game.sounds.bump.play();
+        Game.sounds.bump.play();
     },
     collideWorldBounds() {
         let x = this.x + this.dx;
@@ -227,43 +228,44 @@ game.ball = {
         let ballBottom = ballTop + this.height;
 
         let worldLeft = 0;
-        let worldRight = game.width;
+        let worldRight = Game.width;
         let worldTop = 0;
-        let worldBottom = game.height;
+        let worldBottom = Game.height;
 
         if (ballLeft < worldLeft) {
             this.x = 0;
             this.dx = this.velocity;
-            game.sounds.bump.play();
+            Game.sounds.bump.play();
         } else if (ballRight > worldRight) {
             this.x = worldRight - this.width;
             this.dx = -this.velocity;
-            game.sounds.bump.play();
+            Game.sounds.bump.play();
         } else if (ballTop < worldTop) {
             this.y = 0;
             this.dy = this.velocity;
-            game.sounds.bump.play();
+            Game.sounds.bump.play();
         } else if (ballBottom > worldBottom) {
-            game.sounds.soundtrack.pause();
-            game.sounds.gameover.play();
-            game.end('Вы проиграли');
+            Game.sounds.soundtrack.pause();
+            Game.sounds.Gameover.play();
+            Game.end('Вы проиграли');
         }
     },
 };
 
-game.platform = {
+Game.platform = {
     velocity: 15,
     dx: 0,
-    x: game.width / 2 - 125,
-    y: game.height - 45,
+    x: Game.width / 2 - 125,
+    y: Game.height - 45,
     width: 251,
     height: 41,
-    ball: game.ball,
+    ball: Game.ball,
     bump() {
         if (this.ball) {
             this.ball.start();
             this.ball = null;
-            game.sounds.fire.play();
+            Game.sounds.fire.play();
+            Game.sounds.soundtrack.play();
         }
     },
     start(direction) {
@@ -297,7 +299,7 @@ game.platform = {
         let platformRight = platformLeft + this.width;
 
         let worldLeft = 0;
-        let worldRight = game.width;
+        let worldRight = Game.width;
 
         if (platformLeft < worldLeft || platformRight > worldRight) {
             this.dx = 0;
@@ -306,5 +308,5 @@ game.platform = {
 };
 
 window.addEventListener("load", () => {
-    game.start();
+    Game.start();
 });
